@@ -5,11 +5,12 @@ name = "pypi"
 
 [packages]
 fastapi = "*"
-uvicorn = "*"
-aiomysql = "*"
 pydantic = {extras = ["email"], version = "*"}
+uvicorn = "*"
+cryptography = "*"
+aiomysql = "*"
 
 [dev-packages]
 
 [requires]
-python_version = "3.11"
+python_version = "3.12"
