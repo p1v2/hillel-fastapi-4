@@ -1,6 +1,6 @@
-# init_db.py
-
 import aiosqlite
+import asyncio
+
 
 DATABASE_URL = "test.db"
 
@@ -18,6 +18,4 @@ async def init_db():
         """)
         await db.commit()
 
-# Запуск ініціалізації
-import asyncio
 asyncio.run(init_db())
