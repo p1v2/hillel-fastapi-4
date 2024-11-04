@@ -8,6 +8,8 @@ fastapi = "*"
 uvicorn = "*"
 aiomysql = "*"
 pydantic = {extras = ["email"], version = "*"}
+pytest = "*"
+requests = "*"
 
 [dev-packages]
 
