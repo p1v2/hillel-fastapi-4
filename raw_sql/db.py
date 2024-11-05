@@ -2,7 +2,8 @@ import aiomysql
 
 from models.user import User, UserData
 
-connect = lambda : aiomysql.connect(
+
+connect = lambda: aiomysql.connect(
     host="localhost",
     user="root",
     db="fastapi",
@@ -88,3 +89,16 @@ async def fetch_user(user_id: int) -> User | None:
                 email=record[4],
                 password=record[5],
             )
+
+
+async def delete_user_in_db(user_id: int) -> bool:
+    async with connect() as connection:
+        async with connection.cursor() as cursor:
+            await cursor.execute("SELECT 1 FROM user WHERE id=%s", (user_id,))
+            if await cursor.fetchone() is None:
+                return False
+
+            await cursor.execute("DELETE FROM user WHERE id=%s", (user_id,))
+            await connection.commit()
+
+            return True
