@@ -3,10 +3,10 @@ import json
 from fastapi import APIRouter, Response
 from pydantic import ValidationError
 
-from db import fetch_all_users, create_user_in_db, update_user_in_db, fetch_user
+from .db import fetch_all_users, create_user_in_db, update_user_in_db, fetch_user
 from models.user import UserData
 
-users_router = APIRouter(prefix="/users")
+users_router = APIRouter(prefix="/v1/users")
 
 
 @users_router.get("")
