@@ -6,8 +6,13 @@ name = "pypi"
 [packages]
 fastapi = "*"
 uvicorn = "*"
-aiomysql = "*"
 pydantic = {extras = ["email"], version = "*"}
+sqlalchemy = "*"
+async-sqlalchemy = "*"
+aiomysql = "*"
+databases = "*"
+greenlet = "*"
+requests = "*"
 
 [dev-packages]
 

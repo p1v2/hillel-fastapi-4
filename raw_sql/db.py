@@ -8,6 +8,7 @@ connect = lambda : aiomysql.connect(
     db="fastapi",
 )
 
+
 async def fetch_all_users() -> list[User]:
     async with connect() as connection:
         async with connection.cursor() as cursor:

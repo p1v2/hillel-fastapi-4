@@ -1,10 +1,12 @@
 from fastapi import FastAPI, Response
 
-from api.users import users_router
+from raw_sql.api import users_router as raw_sql_users_router
+from sql_alchemy.api import users_router
 from models.product import Product, ProductPartial
 from models.user import User
 
 app = FastAPI()
+app.include_router(raw_sql_users_router)
 app.include_router(users_router)
 
 
