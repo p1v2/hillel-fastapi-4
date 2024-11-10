@@ -10,6 +10,8 @@ aiomysql = "*"
 pydantic = {extras = ["email"], version = "*"}
 
 [dev-packages]
+pytest = "*"
+httpx = "*"
 
 [requires]
-python_version = "3.11"
+python_version = "3.12.5"

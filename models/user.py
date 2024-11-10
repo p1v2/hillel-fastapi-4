@@ -7,7 +7,7 @@ class UserData(BaseModel):
     # Ukrainian number
     phone_number: str = Field(pattern=r'^(\+38)?0\d{9}$')
     email: EmailStr = Field()
-    password: str = Field(min_length=8)
+    password: str
 
 
 class User(UserData):
