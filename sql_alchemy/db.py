@@ -1,27 +1,16 @@
-from sqlalchemy import Column, Integer, String, select
+from sqlalchemy import Column, Integer, String, select, desc
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker, declarative_base
-from databases import Database
-
 from models.user import User as PydanticUser, UserData
+import os
 
-DATABASE_URL = "mysql+aiomysql://root:@localhost/fastapi"
+DATABASE_URL = f"sqlite+aiosqlite:///{os.path.join(os.getcwd(), 'test.db')}"
 
-# Async Engine from MySQL
 engine = create_async_engine(DATABASE_URL, echo=True, future=True)
 
-# Create async database session
-async_session = sessionmaker(
-    bind=engine,
-    expire_on_commit=False,
-    class_=AsyncSession
-)
-
-# Create database
-database = Database(DATABASE_URL)
+async_session = sessionmaker(bind=engine, expire_on_commit=False, class_=AsyncSession)
 
 Base = declarative_base()
-
 
 class User(Base):
     __tablename__ = "user"
@@ -43,12 +32,9 @@ class User(Base):
             password=self.password,
         )
 
-
 async def fetch_all_users(db: AsyncSession):
     result = await db.execute(select(User))
-
     return result.scalars().all()
-
 
 async def create_user_in_db(db: AsyncSession, user_data: UserData):
     user = User(
@@ -58,28 +44,25 @@ async def create_user_in_db(db: AsyncSession, user_data: UserData):
         email=user_data.email,
         password=user_data.password,
     )
-
     db.add(user)
     await db.commit()
-
     return user
-
 
 async def fetch_user(db: AsyncSession, user_id: int):
     result = await db.execute(select(User).filter(User.id == user_id))
-
     return result.scalars().first()
-
 
 async def update_user_in_db(db: AsyncSession, user: User, user_data: dict):
     for field, value in user_data.items():
         setattr(user, field, value)
-
     await db.commit()
-
     return user
-
 
 async def delete_user_in_db(db: AsyncSession, user: User):
     await db.delete(user)
     await db.commit()
+
+
+async def fetch_latest_user(db: AsyncSession):
+    result = await db.execute(select(User).order_by(desc(User.id)).limit(1))
+    return result.scalars().first()

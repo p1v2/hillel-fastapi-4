@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends
 from fastapi import Response
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from .db import async_session, fetch_all_users, create_user_in_db, fetch_user, update_user_in_db, delete_user_in_db
+from .db import async_session, fetch_all_users, create_user_in_db, fetch_user, update_user_in_db, delete_user_in_db, fetch_latest_user
 from models.user import User, UserData
 
 users_router = APIRouter(prefix="/v2/users")
@@ -78,11 +78,17 @@ async def delete_user(user_id: int, db: AsyncSession = Depends(get_db)):
     return Response(status_code=204)
 
 
-@users_router.get("/{user_id}")
+@users_router.get("/latest", name="get_latest_user")
+async def get_latest_user(db: AsyncSession = Depends(get_db)):
+    latest_user = await fetch_latest_user(db)
+    if not latest_user:
+        return Response(status_code=404)
+    return latest_user.to_pydantic().dict()
+
+# Маршрут для user_id
+@users_router.get("/{user_id}", name="get_user")
 async def get_user(user_id: int, db: AsyncSession = Depends(get_db)):
     user = await fetch_user(db, user_id)
-
     if not user:
-        return Response(json.dumps({"error": "Not Found"}), status_code=404)
-
-    return user
+        return Response(status_code=404)
+    return user.to_pydantic().dict()
