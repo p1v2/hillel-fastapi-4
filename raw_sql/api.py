@@ -3,7 +3,7 @@ import json
 from fastapi import APIRouter, Response
 from pydantic import ValidationError
 
-from .db import fetch_all_users, create_user_in_db, update_user_in_db, fetch_user
+from .db import fetch_all_users, create_user_in_db, update_user_in_db, fetch_user, delete_user_from_db
 from models.user import UserData
 
 users_router = APIRouter(prefix="/v1/users")
@@ -48,3 +48,19 @@ async def partial_update_user(user_id: int, user_data: dict):
         )
 
     return await update_user_in_db(user_id, user)
+
+
+@users_router.delete("/{user_id}")
+async def delete_user(user_id: int):
+    success = await delete_user_from_db(user_id)
+    if not success:
+        return Response(
+            json.dumps({"error": "User not found"}),
+            status_code=404,
+            headers={"Content-Type": "application/json"}
+        )
+    return Response(
+        json.dumps({"message": "User deleted successfully"}),
+        status_code=200,
+        headers={"Content-Type": "application/json"}
+    )
