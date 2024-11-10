@@ -13,6 +13,8 @@ aiomysql = "*"
 databases = "*"
 greenlet = "*"
 requests = "*"
+aiosqlite = "*"
+faker = "*"
 
 [dev-packages]
 

@@ -1,12 +1,16 @@
+import random
+
 import requests
+from faker import Faker
 
 
 def create_user():
+    fake = Faker()
     data = {
-        "first_name": "Vasya",
-        "last_name": "Petrenko",
-        "phone_number": "+380501234567",
-        "email": "john.doe@gmail.com",
+        "first_name": fake.first_name(),
+        "last_name": fake.last_name(),
+        "phone_number": '+380' + str(random.randint(100000000, 999999999)),
+        "email": fake.email(),
     }
 
     response = requests.post("http://localhost:8000/v2/users", json=data)
@@ -68,19 +72,15 @@ def get_user(json):
     print(response.json())
 
 
+def get_latest_user():
+    response = requests.get("http://localhost:8000/v2/users/latest")
+    
+    print("Status Code:", response.status_code)
+    print("Response JSON:", response.json())
+    return response.json()
+
+
 if __name__ == "__main__":
-    json = create_user()
-
-    get_user(json)
-
-    update_user(json)
-
-    get_user(json)
-
-    partially_update_user(json)
-
-    get_user(json)
-
-    delete_user(json)
-
-    get_user(json)
+    get_user({"id": 10})
+    get_latest_user()
+    
