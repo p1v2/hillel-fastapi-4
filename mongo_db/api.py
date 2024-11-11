@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Response
 
 from mongo_db.db import fetch_all_products, create_product_in_db, fetch_product_by_id, update_product_in_db, \
-    delete_product_in_db
+    delete_product_in_db, fetch_discounted_products, fetch_products_report
 from mongo_db.serializers import serialize_mongo_data
 
 products_router = APIRouter(prefix="/v2/products")
@@ -21,6 +21,18 @@ async def create_product(product: dict):
     product = await fetch_product_by_id(result.inserted_id)
 
     return serialize_mongo_data(product)
+
+
+@products_router.get("/discounted")
+async def get_discounted_products():
+    products = await fetch_discounted_products()
+
+    return [serialize_mongo_data(product) for product in products]
+
+
+@products_router.get("/report")
+async def report():
+    return await fetch_products_report()
 
 
 @products_router.get("/{product_id}")

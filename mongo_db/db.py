@@ -17,7 +17,7 @@ async def fetch_all_products():
 
 
 async def create_product_in_db(product):
-   return await products_collection.insert_one(product)
+    return await products_collection.insert_one(product)
 
 
 async def update_product_in_db(product_id, product):
@@ -30,3 +30,19 @@ def delete_product_in_db(product_id):
 
 async def fetch_product_by_id(product_id):
     return await products_collection.find_one({"_id": ObjectId(product_id)})
+
+
+async def fetch_discounted_products():
+    products = []
+
+    # Price less than 5
+    async for product in products_collection.find({"price": {"$lt": 20}}):
+        products.append(product)
+
+    return products
+
+
+async def fetch_products_report():
+    return await products_collection.aggregate([
+        {"$group": {"_id": None, "sum_quantity": {"$sum": "$quantity"}, "avg_price": {"$avg": "$price"}}}
+    ]).to_list(None)
