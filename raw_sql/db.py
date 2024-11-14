@@ -88,3 +88,14 @@ async def fetch_user(user_id: int) -> User | None:
                 email=record[4],
                 password=record[5],
             )
+
+
+async def delete_user_from_db(user_id: int):
+    async with connect() as connection:
+        async with connection.cursor() as cursor:
+            await cursor.execute(
+                "DELETE FROM user WHERE id = %s", (user_id,)
+                )
+            await connection.commit()
+
+            return True
