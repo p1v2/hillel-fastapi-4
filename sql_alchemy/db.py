@@ -1,11 +1,11 @@
-from sqlalchemy import Column, Integer, String, select
+from sqlalchemy import Column, Integer, String, select, desc
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker, declarative_base
 from databases import Database
 
 from models.user import User as PydanticUser, UserData
 
-DATABASE_URL = "mysql+aiomysql://root:@localhost/fastapi"
+DATABASE_URL = "mysql+aiomysql://root:32WHkl50@localhost/hillelfastapi"
 
 # Async Engine from MySQL
 engine = create_async_engine(DATABASE_URL, echo=True, future=True)
@@ -83,3 +83,10 @@ async def update_user_in_db(db: AsyncSession, user: User, user_data: dict):
 async def delete_user_in_db(db: AsyncSession, user: User):
     await db.delete(user)
     await db.commit()
+
+
+async def fetch_latest_user(db: AsyncSession):
+    result = await db.execute(select(User).order_by(desc(User.id)).limit(1))
+    latest_user = result.scalars().first()
+
+    return latest_user
