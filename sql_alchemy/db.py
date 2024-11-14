@@ -5,7 +5,7 @@ from databases import Database
 
 from models.user import User as PydanticUser, UserData
 
-DATABASE_URL = "mysql+aiomysql://root:32WHkl50@localhost/hillelfastapi"
+DATABASE_URL = "mysql+aiomysql://root:32WHkl50@localhost/fastapi"
 
 # Async Engine from MySQL
 engine = create_async_engine(DATABASE_URL, echo=True, future=True)

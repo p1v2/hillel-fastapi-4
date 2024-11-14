@@ -5,8 +5,7 @@ from models.user import User, UserData
 connect = lambda : aiomysql.connect(
     host="localhost",
     user="root",
-    db="hillelfastapi",
-    password="32WHkl50"
+    db="fastapi",
 )
 
 
