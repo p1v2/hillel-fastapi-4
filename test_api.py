@@ -1,12 +1,12 @@
 import requests
 
 
-def create_user():
+def create_user(first_name, last_name, phone_number, email):
     data = {
-        "first_name": "Vasya",
-        "last_name": "Petrenko",
-        "phone_number": "+380501234567",
-        "email": "john.doe@gmail.com",
+        "first_name": first_name,
+        "last_name": last_name,
+        "phone_number": phone_number,
+        "email": email,
     }
 
     response = requests.post("http://localhost:8000/v2/users", json=data)
@@ -68,10 +68,23 @@ def get_user(json):
     print(response.json())
 
 
+def get_latest_user():
+    response = requests.get("http://localhost:8000/v2/users/latest")
+
+    print(f"Get Latest User Status: {response.status_code}")
+    if response.status_code == 200:
+        print(response.json())
+    else:
+        print(f"Error: {response.json()}")
+
+
 if __name__ == "__main__":
-    json = create_user()
+    json = create_user("Vasya", "Petrenko", "+380501234567", "vasya.petrenko@gmail.com")
+    json2 = create_user("Petya", "Vasyliev", "+380501234568", "petya@gmail.com")
 
     get_user(json)
+
+    get_latest_user()
 
     update_user(json)
 
