@@ -60,10 +60,15 @@ def delete_user(json):
 
 
 def get_user(json):
-
     id = json["id"]
     response = requests.get(f"http://localhost:8000/v2/users/{id}")
 
+    print(response.status_code)
+    print(response.json())
+
+
+def get_latest_user():
+    response = requests.get("http://localhost:8000/v2/users/latest")
     print(response.status_code)
     print(response.json())
 
@@ -78,6 +83,8 @@ if __name__ == "__main__":
     get_user(json)
 
     partially_update_user(json)
+
+    get_latest_user()
 
     get_user(json)
 
