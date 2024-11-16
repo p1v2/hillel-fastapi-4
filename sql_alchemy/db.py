@@ -5,7 +5,7 @@ from databases import Database
 
 from models.user import User as PydanticUser, UserData
 
-DATABASE_URL = "mysql+aiomysql://root:@localhost/fastapi"
+DATABASE_URL = "mysql+aiomysql://root:root@localhost/fastapi"
 
 # Async Engine from MySQL
 engine = create_async_engine(DATABASE_URL, echo=True, future=True)
@@ -50,6 +50,11 @@ async def fetch_all_users(db: AsyncSession):
     return result.scalars().all()
 
 
+async def fetch_latest_user(db: AsyncSession):
+    result = await db.execute(select(User).order_by(User.id.desc()).limit(1))
+    return result.scalars().first()
+
+
 async def create_user_in_db(db: AsyncSession, user_data: UserData):
     user = User(
         first_name=user_data.first_name,
@@ -83,3 +88,6 @@ async def update_user_in_db(db: AsyncSession, user: User, user_data: dict):
 async def delete_user_in_db(db: AsyncSession, user: User):
     await db.delete(user)
     await db.commit()
+
+
+

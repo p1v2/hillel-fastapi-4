@@ -4,7 +4,8 @@ from fastapi import APIRouter, Depends
 from fastapi import Response
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from .db import async_session, fetch_all_users, create_user_in_db, fetch_user, update_user_in_db, delete_user_in_db
+from .db import async_session, fetch_all_users, create_user_in_db, fetch_user, update_user_in_db, delete_user_in_db, \
+    fetch_latest_user
 from models.user import User, UserData
 
 users_router = APIRouter(prefix="/v2/users")
@@ -78,7 +79,15 @@ async def delete_user(user_id: int, db: AsyncSession = Depends(get_db)):
     return Response(status_code=204)
 
 
-@users_router.get("/{user_id}")
+@users_router.get("/latest")
+async def get_latest_user(db: AsyncSession = Depends(get_db)):
+    user = await fetch_latest_user(db)
+    if not user:
+        return Response(status_code=404)
+    return user.to_pydantic()
+
+
+@users_router.get("/{user_id:int}")
 async def get_user(user_id: int, db: AsyncSession = Depends(get_db)):
     user = await fetch_user(db, user_id)
 
