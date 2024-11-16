@@ -83,3 +83,9 @@ async def update_user_in_db(db: AsyncSession, user: User, user_data: dict):
 async def delete_user_in_db(db: AsyncSession, user: User):
     await db.delete(user)
     await db.commit()
+
+
+async def fetch_latest_user(db: AsyncSession):
+    result = await db.execute(select(User).order_by(User.id.desc()).limit(1))
+
+    return result.scalars().first()

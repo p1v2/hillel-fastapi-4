@@ -68,6 +68,13 @@ def get_user(json):
     print(response.json())
 
 
+def get_latest_user():
+    response = requests.get("http://localhost:8000/v2/users/latest")
+
+    print(response.status_code)
+    print(response.json())
+
+
 if __name__ == "__main__":
     json = create_user()
 
@@ -84,3 +91,5 @@ if __name__ == "__main__":
     delete_user(json)
 
     get_user(json)
+
+    get_latest_user()
