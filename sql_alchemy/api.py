@@ -4,7 +4,8 @@ from fastapi import APIRouter, Depends
 from fastapi import Response
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from .db import async_session, fetch_all_users, create_user_in_db, fetch_user, update_user_in_db, delete_user_in_db
+from .db import async_session, fetch_all_users, create_user_in_db, fetch_user, update_user_in_db, delete_user_in_db, \
+    fetch_latest_user
 from models.user import User, UserData
 
 users_router = APIRouter(prefix="/v2/users")
@@ -40,6 +41,15 @@ async def create_user(user_data: UserData, db: AsyncSession = Depends(get_db)):
     user = await create_user_in_db(db, user_data)
 
     return Response(user.to_pydantic().model_dump_json(), status_code=201)
+
+
+# щоб не було конфлікту з роутом /{user_id} треба розмістити цей роут перед ним
+@users_router.get("/latest", response_model=User)
+async def get_latest_user(db: AsyncSession = Depends(get_db)):
+    user = await fetch_latest_user(db)
+    if not user:
+        return Response(json.dumps({"error": "No users found"}), status_code=404)
+    return user
 
 
 @users_router.put("/{user_id}")
