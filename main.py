@@ -19,6 +19,16 @@ products = [
     Product(name="Fanta", price=4),
 ]
 
+users = [
+    User(id=1, first_name='Maksim', last_name='Buzovskiy', phone_number='+380123456789', 
+     email='maksim.buzovskiy@official.com', password='540876545676543'), 
+    User(id=2, first_name='Olga', last_name='Ivanova', phone_number='0931234567', 
+         email='olga.ivanova@official.com', password='hgfGHIUOIYUTryet8765456'), 
+    User(id=3, first_name='Andriy', last_name='Shevchenko', phone_number='+380931234567',
+        email='andriy.shevchenko@official.com', password='fguhiu545678765'), 
+    User(id=4, first_name='Natalia', last_name='Petrova', phone_number='0977654321', 
+         email='natalia.petrova@official.com', password='654567JHGFDFGHJKjhgfdsdf')]
+
 
 @app.get("/products")
 async def read_products():
@@ -56,3 +66,11 @@ async def delete_product(product_id: int):
 @app.post("/users")
 async def create_user(user: User):
     return user
+
+@app.delete("/users/{id}") 
+async def delete_user(id: int): 
+    if id in users: 
+        del users[id] 
+        return {"message": "User deleted successfully"} 
+    else: 
+        return Response(status_code=404)

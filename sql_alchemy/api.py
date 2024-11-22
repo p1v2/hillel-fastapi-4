@@ -1,11 +1,12 @@
 import json
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi import Response
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .db import async_session, fetch_all_users, create_user_in_db, fetch_user, update_user_in_db, delete_user_in_db
 from models.user import User, UserData
+from models.user import User
 
 users_router = APIRouter(prefix="/v2/users")
 
@@ -86,3 +87,12 @@ async def get_user(user_id: int, db: AsyncSession = Depends(get_db)):
         return Response(json.dumps({"error": "Not Found"}), status_code=404)
 
     return user
+
+@users_router.get("/latest")
+async def get_latest_user(db: AsyncSession = Depends(get_db)): 
+    result = await db.execute("SELECT * FROM users ORDER BY id DESC LIMIT 1") 
+    latest_user = result.fetchone() 
+    if latest_user is None: 
+        raise HTTPException(status_code=404, detail="No users found") 
+    return User(id=latest_user.id, first_name=latest_user.first_name, last_name=latest_user.last_name, 
+                phone_number=latest_user.phone_number, email=latest_user.email)
