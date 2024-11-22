@@ -1,13 +1,17 @@
 from fastapi import FastAPI, Response
 
+from jwt_auth.api import auth_router
 from raw_sql.api import users_router as raw_sql_users_router
 from sql_alchemy.api import users_router
+from mongo_db.api import products_router as mongo_router
 from models.product import Product, ProductPartial
 from models.user import User
 
 app = FastAPI()
 app.include_router(raw_sql_users_router)
 app.include_router(users_router)
+app.include_router(mongo_router)
+app.include_router(auth_router)
 
 
 products = [
